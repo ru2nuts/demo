@@ -3,21 +3,20 @@ package com.visiblemeasures.meetup.storm;
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.topology.TopologyBuilder;
+import backtype.storm.tuple.Fields;
 
 public class StockPriceTopology {
 
   public static void main(String[] args) {
     TopologyBuilder builder = new TopologyBuilder();
     builder.setSpout("stocks_in", new YqlJsonSpout(), 1);
-    builder.setBolt("stocks_print", new StockPricePrintBolt(), 1).shuffleGrouping("stocks_in");
+    builder.setBolt("stocks_print", new StockPricePrintBolt(), 3).shuffleGrouping("stocks_in");
+    builder.setBolt("join_bolt", new JoinBolt(), 2)
+        .fieldsGrouping("stocks_print", "YHOO", new Fields("ticker"))
+        .fieldsGrouping("stocks_print", "AAPL", new Fields("ticker"))
+        .fieldsGrouping("stocks_print", "ORCL", new Fields("ticker"));
 
     Config conf = new Config();
-    conf.setDebug(false);
-    conf.setNumAckers(2);
-    conf.setNumWorkers(2);
-    conf.setMaxTaskParallelism(4);
-    conf.setMaxSpoutPending(100);
-    conf.setMessageTimeoutSecs(30);
 
     LocalCluster cluster = new LocalCluster();
     cluster.submitTopology("TickerTopology", conf, builder.createTopology());
