@@ -12,9 +12,7 @@ import java.util.Map;
 public class JoinBolt extends BaseBasicBolt {
 
   private int ti;
-  Map<String, String> tickerNames = new HashMap<String, String>();
-
-
+  private Map<String, String> tickerNames = new HashMap<String, String>();
 
   @Override
   public void prepare(Map stormConf, TopologyContext context) {

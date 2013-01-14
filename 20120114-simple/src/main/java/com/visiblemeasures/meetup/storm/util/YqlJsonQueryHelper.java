@@ -48,6 +48,11 @@ public class YqlJsonQueryHelper {
   }
 
   public static Map<String, String> queryNames() {
+    try {
+      Thread.sleep(5000);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
     HashMap<String, String> stockData = new HashMap<String, String>();
     Reader in = null;
     try {

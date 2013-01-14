@@ -27,7 +27,7 @@ public class StockPricePrintBolt extends BaseRichBolt {
   public void execute(Tuple tuple) {
     String ticker = tuple.getString(0);
     Double price = tuple.getDouble(1);
-    System.out.printf("\t------- Split Bolt: %s; Ticker: %s - %s\n", ti, ticker, price);
+    System.out.printf("\t------- Simple Bolt: %s; Ticker: %s - %s\n", ti, ticker, price);
     collector.emit("stock_prices", Arrays.asList((Object) ticker, price));
   }
 
