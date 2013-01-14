@@ -10,19 +10,19 @@ import com.visiblemeasures.meetup.storm.util.YqlJsonQueryHelper;
 
 import java.util.Map;
 
-public class YqlJsonSpout extends BaseRichSpout {
+public class YqlTickerNameSpout  extends BaseRichSpout {
 
   private static final int QUERY_INTERVAL = 3 * 1000;
 
   private transient SpoutOutputCollector spoutOutputCollector;
   private transient long minute = System.currentTimeMillis() / QUERY_INTERVAL;
 
-  public YqlJsonSpout() {
+  public YqlTickerNameSpout() {
   }
 
   @Override
   public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-    outputFieldsDeclarer.declareStream("stock_prices", new Fields("ticker", "price"));
+    outputFieldsDeclarer.declareStream("stock_names", new Fields("ticker", "name"));
   }
 
   @Override
@@ -35,8 +35,8 @@ public class YqlJsonSpout extends BaseRichSpout {
     long currentMinute = System.currentTimeMillis() / QUERY_INTERVAL;
     if (minute != currentMinute) {
       minute = currentMinute;
-      for (Map.Entry<String, Double> dataItem : YqlJsonQueryHelper.queryData().entrySet()) {
-        spoutOutputCollector.emit("stock_prices", new Values(dataItem.getKey(), dataItem.getValue()));
+      for (Map.Entry<String, String> dataItem : YqlJsonQueryHelper.queryNames().entrySet()) {
+        spoutOutputCollector.emit("stock_names", new Values(dataItem.getKey(), dataItem.getValue()));
       }
     } else {
       try {

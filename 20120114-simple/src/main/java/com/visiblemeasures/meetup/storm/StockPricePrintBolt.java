@@ -27,22 +27,12 @@ public class StockPricePrintBolt extends BaseRichBolt {
   public void execute(Tuple tuple) {
     String ticker = tuple.getString(0);
     Double price = tuple.getDouble(1);
-
     System.out.printf("\t------- Split Bolt: %s; Ticker: %s - %s\n", ti, ticker, price);
-
-    if (ticker.equals("YHOO")) {
-      collector.emit("YHOO", Arrays.asList((Object) ticker, price));
-    } else if (ticker.equals("ORCL")) {
-      collector.emit("ORCL", Arrays.asList((Object) ticker, price));
-    } else if (ticker.equals("AAPL")) {
-      collector.emit("AAPL", Arrays.asList((Object) ticker, price));
-    }
+    collector.emit("stock_prices", Arrays.asList((Object) ticker, price));
   }
 
   @Override
   public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-    outputFieldsDeclarer.declareStream("ORCL", new Fields("ticker", "price"));
-    outputFieldsDeclarer.declareStream("YHOO", new Fields("ticker", "price"));
-    outputFieldsDeclarer.declareStream("AAPL", new Fields("ticker", "price"));
+    outputFieldsDeclarer.declareStream("stock_prices", new Fields("ticker", "price"));
   }
 }
