@@ -11,6 +11,7 @@ public class StockPriceTopology {
     TopologyBuilder builder = new TopologyBuilder();
     builder.setSpout("stocks_in", new YqlJsonSpout(), 1);
     builder.setBolt("stocks_print", new StockPricePrintBolt(), 3).shuffleGrouping("stocks_in");
+    //another bolt for each of the stream here
     builder.setBolt("join_bolt", new JoinBolt(), 2)
         .fieldsGrouping("stocks_print", "YHOO", new Fields("ticker"))
         .fieldsGrouping("stocks_print", "AAPL", new Fields("ticker"))
